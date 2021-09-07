@@ -1,9 +1,11 @@
+import Coin from './Components/Coin';
+
 function App() {
-   return (
-      <div>
-         <h1>Probando Proyecto</h1>
-      </div>
-   );
+    return (
+        <div>
+            <Coin />
+        </div>
+    );
 }
 
 export default App;
