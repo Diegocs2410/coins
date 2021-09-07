@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import getData from '../ayudas/getData';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleDoubleUp, faAngleDoubleDown } from '@fortawesome/free-solid-svg-icons';
+
+const flechaArriba = <FontAwesomeIcon icon={faAngleDoubleUp} size='3x' color='green' />;
+const flechaAbajo = <FontAwesomeIcon icon={faAngleDoubleDown} size='3x' color='red' />;
 
 const Coin = () => {
     const [coins, setCoins] = useState([]);
@@ -15,6 +20,13 @@ const Coin = () => {
         //   cleanup
         // };
     }, []);
+
+    // Creamos los filtros y luego los recorremos para pintar las filas en la tabla
+    const filtros = coins.filter(
+        ({ name, symbol }) =>
+            name.toLowerCase().includes(search.toLowerCase()) ||
+            symbol.toLowerCase().includes(search.toLowerCase())
+    );
 
     const handleChange = (e) => {
         console.log(e.target.value);
@@ -40,13 +52,6 @@ const Coin = () => {
                             </div>
                         </form>
                     </div>
-                    <div className='col-sm-6'>
-                        <div className='mx-1 mx-sm-5 mb-3'>
-                            <button className='btn btn-primary p-2 form-control fw-bold'>
-                                Buscar
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 {/* Tabla para mostrar los datos de la api */}
                 <table className='table  table-striped table-hover'>
@@ -57,10 +62,11 @@ const Coin = () => {
                             <th>Symbol</th>
                             <th>Price</th>
                             <th>Price Change</th>
+                            <th>State</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {coins.map((coin) => (
+                        {filtros.map((coin) => (
                             <tr key={coin.id}>
                                 <td>
                                     <img
@@ -71,7 +77,7 @@ const Coin = () => {
                                 </td>
                                 <td>{coin.name} </td>
                                 <td>{coin.symbol} </td>
-                                <td>{coin.current_price} </td>
+                                <td>$ {coin.current_price} </td>
                                 <td
                                     className={
                                         coin.price_change_percentage_24h < 0
@@ -79,7 +85,12 @@ const Coin = () => {
                                             : 'text-success'
                                     }
                                 >
-                                    {coin.price_change_percentage_24h}{' '}
+                                    {Math.round(coin.price_change_percentage_24h * 100) / 100}{' '}
+                                </td>
+                                <td>
+                                    {coin.price_change_percentage_24h < 0
+                                        ? flechaAbajo
+                                        : flechaArriba}{' '}
                                 </td>
                             </tr>
                         ))}
